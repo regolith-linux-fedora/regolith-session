@@ -17,3 +17,6 @@ ExecStart=/bin/true
 ExecStop=/bin/sh -c 'f=%h/.config/regolith3/logout; [ -f "$$f" ] || exit 0; echo "Regolith is launching user post-logout file $$f"; timeout --verbose 5 bash "$$f"'
 # The script gets 5 seconds, as before
 TimeoutStopSec=10
+# The session's dconf profile (use_regolith_dconf_profile) must not reach the
+# next session of another desktop
+ExecStopPost=-/usr/bin/systemctl --user unset-environment DCONF_PROFILE

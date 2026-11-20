@@ -70,6 +70,17 @@ clear_wm_sockets() {
     systemctl --user unset-environment I3SOCK SWAYSOCK 2>/dev/null || :
 }
 
+# Keep Regolith's look and settings out of the user's other desktops, such as
+# GNOME: the session writes to its own dconf database (~/.config/dconf/regolith)
+# and reads the user's database and the system databases of the "user" profile
+# below it. regolith-post-logout.service drops the variable at logout, since
+# gnome-session puts it into the user manager, which can outlive the session.
+use_regolith_dconf_profile() {
+    [ -z "${DCONF_PROFILE-}" ] && [ -d "${XDG_RUNTIME_DIR-}" ] || return 0
+    export DCONF_PROFILE="$XDG_RUNTIME_DIR/regolith-dconf-profile"
+    { echo user-db:regolith; cat /etc/dconf/profile/user 2>/dev/null || echo user-db:user; } > "$DCONF_PROFILE"
+}
+
 # Determine where the default i3 and sway config files are
 # Sets I3_CONFIG_FILE and SWAY_CONFIG_FILE
 resolve_default_config_file() {

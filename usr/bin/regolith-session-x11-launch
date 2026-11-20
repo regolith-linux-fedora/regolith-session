@@ -1,6 +1,8 @@
 #!/bin/bash
 set -Eeu -o pipefail
 
+source /usr/lib/regolith/regolith-session-common.sh
+
 SESSION_TYPE="regolith-x11"
 
 if [ -z "${XDG_CURRENT_DESKTOP-}" ]; then
@@ -15,6 +17,8 @@ case ":${XDG_CONFIG_DIRS-}:" in
     *":/etc/xdg/xdg-$SESSION_TYPE:"*) ;;
     *) export XDG_CONFIG_DIRS="/etc/xdg/xdg-$SESSION_TYPE:${XDG_CONFIG_DIRS:-/etc/xdg}" ;;
 esac
+
+use_regolith_dconf_profile
 
 if [ -f /etc/os-release ]; then
     # shellcheck disable=SC1091
