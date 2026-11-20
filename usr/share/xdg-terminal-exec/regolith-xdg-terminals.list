@@ -4,3 +4,8 @@
 -foot.desktop
 -footclient.desktop
 -foot-server.desktop
+# Prefer GNOME Terminal, the terminal regolith-ftue sets up a profile for
+# and the one x-terminal-emulator resolves to on Ubuntu. Without a GNOME
+# list (Fedora ships none), xdg-terminal-exec would take the first
+# TerminalEmulator entry in directory order, e.g. rxvt-unicode.
+org.gnome.Terminal.desktop

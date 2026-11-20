@@ -40,6 +40,13 @@ pick() { # pick <XDG_CURRENT_DESKTOP>
     XDG_CURRENT_DESKTOP=$1 xdg-terminal-exec --print-id 2>/dev/null || echo "(none)"
 }
 
+# The Regolith list prefers GNOME Terminal; hide it so the throwaway entry
+# is the only terminal left besides foot.
+if [ -e /usr/share/applications/org.gnome.Terminal.desktop ]; then
+    printf '[Desktop Entry]\nType=Application\nName=Hidden\nHidden=true\n' \
+        > "$XDG_DATA_HOME/applications/org.gnome.Terminal.desktop"
+fi
+
 got=$(pick Regolith:GNOME-Flashback:GNOME)
 if [ "$got" = autopkgtest-term.desktop ]; then
     echo "ok: X11 session picks $got"
