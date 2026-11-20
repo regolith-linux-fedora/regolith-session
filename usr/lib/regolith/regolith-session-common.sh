@@ -240,10 +240,19 @@ load_regolith_trawlres() {
     fi
 }
 
-# Merge the system resources, as the display manager's Xsession does
+# Merge the system resources, as the display manager's Xsession does.
+# /etc/X11/Xresources is a file on most distributions (xinit's, merged by
+# xinitrc-common on Fedora) and a directory of files on Debian and Ubuntu
+# (x11-common's, merged by Xsession.d/30x11-common_xresources).
 # source ~ https://git.launchpad.net/ubuntu/+source/gdm3/tree/debian/patches/ubuntu/xresources_is_a_dir.patch?h=applied/ubuntu/noble
 load_system_xres() {
     local sysresources=/etc/X11/Xresources i
+    if [ -f "$sysresources" ]; then
+        if [ -r "$sysresources" ]; then
+            xrdb -nocpp -merge "$sysresources"
+        fi
+        return 0
+    fi
     for i in `ls "$sysresources" 2>/dev/null` ; do
         if [ -r "$sysresources/$i"  -a -f "$sysresources/$i" ] && expr "$i" : '^[[:alnum:]_-]\+$' > /dev/null; then
             xrdb -nocpp -merge "$sysresources/$i"
